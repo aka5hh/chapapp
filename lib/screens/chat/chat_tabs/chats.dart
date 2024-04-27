@@ -2,6 +2,7 @@ import 'package:chat_application_iub_cse464/widgets/custom_buttons/Rouded_Action
 import 'package:chat_application_iub_cse464/widgets/input_widgets/simple_input_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:random_avatar/random_avatar.dart';
 
 import '../../../const_config/color_config.dart';
 import '../../../services/chat_service.dart';
@@ -27,20 +28,52 @@ class _ChatsPageState extends State<ChatsPage> {
               child: StreamBuilder(
                 stream: firebase.collection('chat').orderBy('time').snapshots(),
                 builder: (context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData && snapshot.connectionState == ConnectionState.active) {
+                  if (snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.active) {
                     var data = snapshot.data.docs;
                     return data.length != 0
                         ? ListView.builder(
                             itemCount: data.length,
                             itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Card(
-                                  color: Colors.white,
-                                  child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(snapshot.data.docs[index]['message']),
-                                ),),
+                              return Row(
+                                children: [
+                                  // CircleAvatar(
+                                  //   radius: 20,
+                                  //   backgroundColor: Colors.amber,
+                                  //   child: Icon(Icons.account_circle),
+                                  // ),
+
+                                  RandomAvatar(
+                                      snapshot.data.docs[index]['uuid'],
+                                      height: 50,
+                                      width: 50),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          snapshot.data.docs[index]['name'],
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 0.2),
+                                          child: Container(
+                                            color: Colors.white,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8),
+                                              child: Text(
+                                                snapshot.data.docs[index]
+                                                    ['message'],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               );
                             },
                           )
